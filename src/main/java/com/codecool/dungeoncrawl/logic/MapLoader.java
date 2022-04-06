@@ -225,30 +225,57 @@ public class MapLoader {
             }
         }
 
-
-
         //--------zaladowanie Actors z bazy-------------------
-//        ArrayList<Actor> actorsFromJSON = new ArrayList<>(); //przykładowo
-//        for (Actor actor : actorsFromJSON){
-//            Cell cellForActor = map.getCell(actor.getX(), actor.getY());
-//            cellForActor.setType(CellType.FLOOR);
-//            cellForActor.setCellContent(actor);
-//            actor.setCell(cellForActor);
-//            if (actor instanceof Ghost){
-//                map.setGhostInitial((Ghost) actor);
-//            } else if (actor instanceof Monster){
-//                map.setMonsterInitial((Monster) actor);
-//            } else if (actor instanceof Goblin){
-//                map.setGoblinInitial(new Goblin(cellForActor));
-//            } else if (actor instanceof Player){
-//                //--------zaladowanie Playera z bazy-------------------
-//                ArrayList<Item> backpackFromJSON = new ArrayList<>(); //przykładowo
-//                for (Item item : backpackFromJSON){
-//                    ((Player) actor).backpack.addItemToBackPackDirecly(item);
-//                }
-//            }
-//        }
+        ArrayList<Actor> actorsFromJSON = new ArrayList<>(); //przykładowo
 
+        Player player = new Player(new Cell(2,3), "Władek");
+        Goblin goblin = new Goblin(new Cell(4,4));
+        Ghost ghost = new Ghost(new Cell(6,4));
+        Monster monster = new Monster(new Cell(6,2));
+        Skeleton skeleton = new Skeleton(new Cell(7,4));
+        actorsFromJSON.add(player);
+        actorsFromJSON.add(goblin);
+        actorsFromJSON.add(ghost);
+        actorsFromJSON.add(monster);
+        actorsFromJSON.add(skeleton);
+        //-----------------------------------------------------------------
+
+        for (Actor actor : actorsFromJSON){
+            Cell cellForActor = map.getCell(actor.getX(), actor.getY());
+            cellForActor.setType(CellType.FLOOR);
+            cellForActor.setCellContent(actor);
+            actor.setCell(cellForActor);
+            if (actor instanceof Ghost){
+                map.setGhostInitial((Ghost) actor);
+            } else if (actor instanceof Monster){
+                map.setMonsterInitial((Monster) actor);
+            } else if (actor instanceof Goblin){
+                map.setGoblinInitial(new Goblin(cellForActor));
+            } else if (actor instanceof Player){
+
+                //--------zaladowanie Playera z bazy-------------------
+                ArrayList<Item> backpackFromJSON = new ArrayList<>(); //przykładowo
+
+                Cheese cheese = new Cheese(new Cell(2,3), 100);
+                Cheese cheese1 = new Cheese(new Cell(2,3), 100);
+                Sword sword = new Sword(new Cell(2,3), 100);
+                Sword1 sword1 = new Sword1(new Cell(2,3), 100);
+                Key key = new Key(new Cell(2,3), 100);
+
+                backpackFromJSON.add(cheese);
+                backpackFromJSON.add(cheese1);
+                backpackFromJSON.add(sword);
+                backpackFromJSON.add(sword1);
+                backpackFromJSON.add(key);
+                //-----------------------------------------------------------------
+
+                for (Item item : backpackFromJSON){
+                    ((Player) actor).backpack.addItemToBackPackDirecly(item);
+                }
+                player.setTileName();
+                map.setPlayer(player);
+            }
+        }
         return map;
     }
 }

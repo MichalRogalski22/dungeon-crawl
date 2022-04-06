@@ -13,8 +13,8 @@ public class App {
     }
 
     public static void main(String[] args) {
-        JSONsave savedTest = new JSONsave();
-        savedTest.saveToJSON();
+//        JSONsave savedTest = new JSONsave();
+//        savedTest.saveToJSON();
         PlayerInput.start(args);
     }
 }
