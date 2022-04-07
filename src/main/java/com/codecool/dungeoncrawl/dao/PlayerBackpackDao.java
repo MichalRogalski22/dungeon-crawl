@@ -8,5 +8,8 @@ public interface PlayerBackpackDao {
     void add(PlayerBackpackModel backpack);
     void update(PlayerBackpackModel backpack);
     PlayerBackpackModel get(int id);
+
+    List<PlayerBackpackModel> getBackpackItemsByPlayerName(String playerName);
+
     List<PlayerBackpackModel> getAll();
 }

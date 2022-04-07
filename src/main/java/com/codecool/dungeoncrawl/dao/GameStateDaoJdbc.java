@@ -50,21 +50,22 @@ public class GameStateDaoJdbc implements GameStateDao {
     }
 
     @Override
-    public GameStateModel get(int id) {
+    public GameStateModel get(String playerName) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT saved_at, current_map, player_name FROM game_state WHERE id = ?";
+            String sql = "SELECT id, saved_at, current_map, player_name FROM game_state WHERE player_name = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1, id);
+            statement.setString(1, playerName);
             ResultSet game = statement.executeQuery();
             if (!game.next()) {
                 return null;
             }
-            PlayerModel player = playerDaoJdbc.get(game.getString(3));
-            GameStateModel gameState = new GameStateModel(game.getString(2), game.getDate(1), player);
+            PlayerModel player = playerDaoJdbc.get(game.getString(4));
+            GameStateModel gameState = new GameStateModel(game.getString(3), game.getDate(2), player);
+            int id = game.getInt(5);
             gameState.setId(id);
             return gameState;
         } catch (SQLException e) {
-            throw new RuntimeException("Error while reading game with id: " + id, e);
+            throw new RuntimeException("Error while reading game with player name: " + playerName, e);
         }
     }
 

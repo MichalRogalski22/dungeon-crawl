@@ -64,6 +64,25 @@ public class GameOpponentsDaoJdbc implements GameOpponentsDao {
     }
 
     @Override
+    public List<GameOpponentsModel> getOpponentsByGameId(int gameId) {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT id, opponent_id FROM game_opponents WHERE game_id = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, gameId);
+            ResultSet result = statement.executeQuery();
+            List<GameOpponentsModel> gameOpponentsModels = new ArrayList<>();
+            while (result.next()) {
+                GameOpponentsModel gameOpponentsModel = new GameOpponentsModel(gameId, result.getInt(3));
+                gameOpponentsModel.setId(result.getInt(1));
+                gameOpponentsModels.add(gameOpponentsModel);
+            }
+            return gameOpponentsModels;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while reading game item having game id: " + gameId, e);
+        }
+    }
+
+    @Override
     public List<GameOpponentsModel> getAll() {
         try (Connection conn = dataSource.getConnection()) {
             String sql = "SELECT id, game_id, opponent_id FROM game_opponents";

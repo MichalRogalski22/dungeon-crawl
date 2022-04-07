@@ -1,6 +1,5 @@
 package com.codecool.dungeoncrawl.dao;
 
-import com.codecool.dungeoncrawl.model.GameItemsModel;
 import com.codecool.dungeoncrawl.model.PlayerBackpackModel;
 
 import javax.sql.DataSource;
@@ -61,6 +60,25 @@ public class PlayerBackpackDaoJdbc implements PlayerBackpackDao {
             return backpack;
         } catch (SQLException e) {
             throw new RuntimeException("Error while reading game backpack id: " + id, e);
+        }
+    }
+
+    @Override
+    public List<PlayerBackpackModel> getBackpackItemsByPlayerName(String playerName) {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT id, item_id FROM player_backpack WHERE player_name = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, playerName);
+            ResultSet result = statement.executeQuery();
+            List<PlayerBackpackModel> backpackItems = new ArrayList<>();
+            while (result.next()) {
+                PlayerBackpackModel backpackItem = new PlayerBackpackModel(playerName, result.getInt(2));
+                backpackItem.setId(result.getInt(1));
+                backpackItems.add(backpackItem);
+            }
+            return backpackItems;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while reading backpack having player name: " + playerName, e);
         }
     }
 

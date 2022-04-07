@@ -163,6 +163,61 @@ public class GameDatabaseManager {
         }
     }
 
+    public void loadSavedGame(String playerName){
+        PlayerModel player = playerDao.get(playerName);
+        GameStateModel gameStateModel = gameStateDao.get(playerName); // pobierz stan gry na podstawie nazwy gracza
+        int gameId = gameStateModel.getId();
+
+        List<ItemModel> itemModels = getAllGameItems(gameId); // wyciągnij wszystkie modele przedmiotów pasujące do id gry na podstwie ich id
+        List<OpponentModel> opponentModels = getAllGameOpponent(gameId); // wyciągnij wszystkie modele
+        List<DoorModel> doorModels = getAllDoorModels(gameId);
+        List<ItemModel> itemModelsBackpack = getItemsFromBackpack(playerName);
+    }
+
+
+
+
+    private List<ItemModel> getAllGameItems(int gameId) {
+        List<GameItemsModel> gameItems = gameItemsDao.getItemsByGameId(gameId); // wyciągnij id przedmiotów za pomocą id gry
+        List<ItemModel> itemModelList = new ArrayList<>();
+        for (GameItemsModel gameItem : gameItems){
+            ItemModel itemModel = itemDao.get(gameItem.getItemId());
+            itemModelList.add(itemModel);
+        }
+        return itemModelList;
+    }
+
+    private List<OpponentModel> getAllGameOpponent(int gameId){
+        List<GameOpponentsModel> gameOpponents = gameOpponentsDao.getOpponentsByGameId(gameId);
+        List<OpponentModel> opponentModelsList = new ArrayList<>();
+        for (GameOpponentsModel gameOpponent : gameOpponents){
+            OpponentModel opponentModel = opponentDao.get(gameOpponent.getGameId());
+            opponentModelsList.add(opponentModel);
+        }
+        return opponentModelsList;
+    }
+
+    private List<DoorModel> getAllDoorModels(int gameId){
+        List<GameDoorsModel> gameDoors = gameDoorsDao.getDoorsByGameId(gameId);
+        List<DoorModel> doorModelList = new ArrayList<>();
+        for (GameDoorsModel gameDoor : gameDoors){
+            DoorModel doorModel = doorDao.get(gameDoor.getDoorId());
+            doorModelList.add(doorModel);
+        }
+        return doorModelList;
+    }
+
+    private List<ItemModel> getItemsFromBackpack(String playerName){
+        List<ItemModel> itemModelsInBackpack = new ArrayList<>();
+        List<PlayerBackpackModel> playerBackpackModels = playerBackpackDao.getBackpackItemsByPlayerName(playerName);
+        for (PlayerBackpackModel backpackModel : playerBackpackModels){
+            ItemModel itemModel = itemDao.get(backpackModel.getItemId());
+            itemModelsInBackpack.add(itemModel);
+        }
+        return itemModelsInBackpack;
+    }
+
+
     public PlayerModel getPlayer(String userName){
         return playerDao.get(userName);
     }

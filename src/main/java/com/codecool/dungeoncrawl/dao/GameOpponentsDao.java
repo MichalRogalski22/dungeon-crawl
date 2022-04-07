@@ -8,5 +8,8 @@ public interface GameOpponentsDao {
     void add(GameOpponentsModel opponent);
     void update(GameOpponentsModel opponent);
     GameOpponentsModel get(int id);
+
+    List<GameOpponentsModel> getOpponentsByGameId(int gameId);
+
     List<GameOpponentsModel> getAll();
 }

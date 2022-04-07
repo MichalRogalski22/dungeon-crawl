@@ -1,7 +1,6 @@
 package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.model.GameDoorsModel;
-import com.codecool.dungeoncrawl.model.GameItemsModel;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -62,6 +61,25 @@ public class GameDoorsDaoJdbc implements GameDoorsDao {
             return door;
         } catch (SQLException e) {
             throw new RuntimeException("Error while reading game door id: " + id, e);
+        }
+    }
+
+    @Override
+    public List<GameDoorsModel> getDoorsByGameId(int gameId) {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT id, door_id FROM game_doors WHERE game_id = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, gameId);
+            ResultSet result = statement.executeQuery();
+            List<GameDoorsModel> doors = new ArrayList<>();
+            while (result.next()) {
+                GameDoorsModel doorsModel = new GameDoorsModel(gameId, result.getInt(2));
+                doorsModel.setId(result.getInt(1));
+                doors.add(doorsModel);
+            }
+            return doors;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while reading game door having game id: " + gameId, e);
         }
     }
 

@@ -8,5 +8,8 @@ public interface GameDoorsDao {
     void add(GameDoorsModel door);
     void update(GameDoorsModel door);
     GameDoorsModel get(int id);
+
+    List<GameDoorsModel> getDoorsByGameId(int gameId);
+
     List<GameDoorsModel> getAll();
 }
