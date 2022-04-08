@@ -45,7 +45,7 @@ public class Main extends Application {
         setupDbManager();
 
         this.playerName = playerName;
-        map = MapLoader.loadFromDatabase(dbManager.loadSavedGame());
+        map = MapLoader.loadFromDatabase(dbManager.loadSavedGame("dupa"));
 
         ai = new NpcMovement(map);
         canvas = new Canvas(

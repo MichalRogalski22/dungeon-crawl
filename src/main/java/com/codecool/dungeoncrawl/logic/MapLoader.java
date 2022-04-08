@@ -381,6 +381,7 @@ public class MapLoader {
         Cell cellForPlayer = map.getCell(playerModel.getX(), playerModel.getY());
         cellForPlayer.setType(CellType.FLOOR);
         player = new Player(cellForPlayer, playerModel.getPlayerName());
+        cellForPlayer.setCellContent(player);
         map.setPlayer(player);
         List<OpponentModel> opponentModels = modelLoader.getOpponentModels();
         for (OpponentModel opponentModel : opponentModels) {
@@ -417,8 +418,9 @@ public class MapLoader {
                 switch (itemModel.getItemName()) {
                     case "cheese":
                         Cheese cheese = new Cheese(cellForItem);
-                        map.setItemInitial(cheese);
                         cellForItem.setCellContent(cheese);
+                        map.setItemInitial(cheese);
+
                         break;
                     case "crown":
                         Crown crown = new Crown(cellForItem);
