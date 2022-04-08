@@ -40,8 +40,11 @@ public class Main extends Application {
     GameDatabaseManager dbManager;
 
     public Main(String playerName) {
+        setupDbManager();
+
         this.playerName = playerName;
-        map = MapLoader.loadMap(playerName);
+        map = MapLoader.loadFromDatabase(dbManager.loadSavedGame());
+
         ai = new NpcMovement(map);
         canvas = new Canvas(
                 map.getWidth()/2 * Tiles.TILE_WIDTH,

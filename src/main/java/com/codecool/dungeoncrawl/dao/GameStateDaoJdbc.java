@@ -59,9 +59,9 @@ public class GameStateDaoJdbc implements GameStateDao {
             if (!game.next()) {
                 return null;
             }
-            PlayerModel player = playerDaoJdbc.get(game.getString(4));
+            PlayerModel player = playerDaoJdbc.get(playerName);
             GameStateModel gameState = new GameStateModel(game.getString(3), game.getDate(2), player);
-            int id = game.getInt(5);
+            int id = game.getInt(1);
             gameState.setId(id);
             return gameState;
         } catch (SQLException e) {

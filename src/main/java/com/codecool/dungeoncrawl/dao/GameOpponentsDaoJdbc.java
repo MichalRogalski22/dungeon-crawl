@@ -72,7 +72,7 @@ public class GameOpponentsDaoJdbc implements GameOpponentsDao {
             ResultSet result = statement.executeQuery();
             List<GameOpponentsModel> gameOpponentsModels = new ArrayList<>();
             while (result.next()) {
-                GameOpponentsModel gameOpponentsModel = new GameOpponentsModel(gameId, result.getInt(3));
+                GameOpponentsModel gameOpponentsModel = new GameOpponentsModel(gameId, result.getInt(2));
                 gameOpponentsModel.setId(result.getInt(1));
                 gameOpponentsModels.add(gameOpponentsModel);
             }

@@ -1,5 +1,6 @@
 package com.codecool.dungeoncrawl.dao;
 
+import com.codecool.dungeoncrawl.ModelLoader;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.*;
@@ -163,7 +164,8 @@ public class GameDatabaseManager {
         }
     }
 
-    public void loadSavedGame(String playerName){
+    public ModelLoader loadSavedGame(String playerName){
+        ModelLoader modelLoader = new ModelLoader();
         PlayerModel player = playerDao.get(playerName);
         GameStateModel gameStateModel = gameStateDao.get(playerName); // pobierz stan gry na podstawie nazwy gracza
         int gameId = gameStateModel.getId();
@@ -172,6 +174,15 @@ public class GameDatabaseManager {
         List<OpponentModel> opponentModels = getAllGameOpponent(gameId); // wyciągnij wszystkie modele
         List<DoorModel> doorModels = getAllDoorModels(gameId);
         List<ItemModel> itemModelsBackpack = getItemsFromBackpack(playerName);
+
+        modelLoader.setItemModelList(itemModels);
+        modelLoader.setOpponentModels(opponentModels);
+        modelLoader.setDoorModels(doorModels);
+        modelLoader.setPlayerBackpack(itemModelsBackpack);
+        modelLoader.setPlayerModel(player);
+        modelLoader.setGameStateModel(gameStateModel);
+
+        return modelLoader;
     }
 
 
@@ -191,7 +202,7 @@ public class GameDatabaseManager {
         List<GameOpponentsModel> gameOpponents = gameOpponentsDao.getOpponentsByGameId(gameId);
         List<OpponentModel> opponentModelsList = new ArrayList<>();
         for (GameOpponentsModel gameOpponent : gameOpponents){
-            OpponentModel opponentModel = opponentDao.get(gameOpponent.getGameId());
+            OpponentModel opponentModel = opponentDao.get(gameOpponent.getOpponentId());
             opponentModelsList.add(opponentModel);
         }
         return opponentModelsList;

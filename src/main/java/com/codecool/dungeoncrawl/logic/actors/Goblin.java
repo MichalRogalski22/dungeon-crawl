@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
+import com.codecool.dungeoncrawl.model.OpponentModel;
 import javafx.stage.Stage;
 
 public class Goblin extends Actor {
@@ -14,6 +15,11 @@ public class Goblin extends Actor {
         this.setHealth(1);
         this.setAttackPower(1);
         this.setShield(0);
+    }
+
+    public Goblin(OpponentModel goblinModel, Cell cell){
+        super(cell);
+
     }
 
     @Override
