@@ -18,8 +18,25 @@ public class Door implements Drawable {
         return cell;
     }
 
+    public void setCell(Cell cell) {
+        this.cell = cell;
+    }
+
+    public boolean isOpen() { return isOpen; }
+
+    public void setOpen(boolean open) { isOpen = open;  }
+
     @Override
     public String getTileName() {
-        return "door";
+        if (isOpen){
+            return "dooropen";
+        } else {
+            return "doorclose";
+        }
+//        return "door";
+    }
+
+    public void openDoor(){
+        isOpen = true;
     }
 }

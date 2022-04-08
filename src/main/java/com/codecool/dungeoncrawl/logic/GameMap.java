@@ -6,6 +6,11 @@
 package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.logic.actors.*;
+import com.codecool.dungeoncrawl.logic.actors.*;
+import com.codecool.dungeoncrawl.logic.actors.Goblin;
+import com.codecool.dungeoncrawl.logic.actors.Ghost;
+import com.codecool.dungeoncrawl.logic.actors.Monster;
+import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Door;
 import com.codecool.dungeoncrawl.logic.items.Item;
 
@@ -17,12 +22,13 @@ public class GameMap {
     private int height;
     private Cell[][] cells;
     private static Player player;
-    private ArrayList<Goblin> goblins = new ArrayList<>();
-    private ArrayList<Ghost> ghosts = new ArrayList<>();
-    private ArrayList<Monster> monsters = new ArrayList<>();
-    private ArrayList<Skeleton> skeletons = new ArrayList<>();
-    private ArrayList<Item> items = new ArrayList<>();
-    private ArrayList<Door> doors = new ArrayList<>();
+    private static ArrayList<Goblin> goblins = new ArrayList<>();
+    private static ArrayList<Ghost> ghosts = new ArrayList<>();
+    private static ArrayList<Monster> monsters = new ArrayList<>();
+    private static ArrayList<Skeleton> skeletons = new ArrayList<>();
+    private static ArrayList<Item> items = new ArrayList<>();
+    private static ArrayList<Door> doors = new ArrayList<>();
+
 
     public GameMap(int width, int height, CellType defaultCellType) {
         this.width = width;
@@ -36,16 +42,23 @@ public class GameMap {
         }
     }
 
+    public static void clearAllLists() {
+        goblins = new ArrayList<>();
+        ghosts = new ArrayList<>();
+        monsters = new ArrayList<>();
+        skeletons = new ArrayList<>();
+        items = new ArrayList<>();
+        doors = new ArrayList<>();
+    }
+
     public Cell getCell(int x, int y) {
         return this.cells[x][y];
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
+    public static void setPlayer(Player myPlayer) { player = myPlayer; }
 
-    public Player getPlayer() {
-        return this.player;
+    public static Player getPlayer() {
+        return player;
     }
 
     public static boolean nextMap() {
@@ -68,6 +81,8 @@ public class GameMap {
         monsters.add(monster);
     }
 
+    public void setItem(Item item) { items.add(item); }
+
     public void setSkeletonInitial(Skeleton skeleton){
         skeletons.add(skeleton);
     }
@@ -88,27 +103,27 @@ public class GameMap {
         return this.height;
     }
 
-    public ArrayList<Goblin> getGoblins() {
+    public static ArrayList<Goblin> getGoblins() {
         return goblins;
     }
 
-    public ArrayList<Ghost> getGhosts() {
+    public static ArrayList<Ghost> getGhosts() {
         return ghosts;
     }
 
-    public ArrayList<Monster> getMonsters() {
+    public static ArrayList<Monster> getMonsters() {
         return monsters;
     }
 
-    public ArrayList<Skeleton> getSkeletons() {
-        return skeletons;
-    }
-
-    public ArrayList<Item> getItems() {
+    public static ArrayList<Item> getItems() {
         return items;
     }
 
-    public ArrayList<Door> getDoors() {
+    public static ArrayList<Skeleton> getSkeletons() {
+        return skeletons;
+    }
+
+    public static ArrayList<Door> getDoors() {
         return doors;
     }
 

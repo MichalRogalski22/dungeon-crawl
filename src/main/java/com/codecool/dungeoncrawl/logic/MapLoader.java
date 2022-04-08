@@ -6,36 +6,56 @@
 package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.ModelLoader;
+import com.codecool.dungeoncrawl.NoSQLDatabase.JSONDatabaseManager;
+import com.codecool.dungeoncrawl.NoSQLDatabase.JSONextract;
+
 import com.codecool.dungeoncrawl.logic.actors.*;
 import com.codecool.dungeoncrawl.logic.items.*;
 import com.codecool.dungeoncrawl.model.*;
 
+
 import java.io.InputStream;
 import java.util.ArrayList;
+
 import java.util.List;
+
+import java.util.Arrays;
+import java.util.Objects;
+
 import java.util.Scanner;
 
 public class MapLoader {
     public static int flag = 0;
-    // private static Player player = new Player(new Cell(new GameMap(5,5,CellType.EMPTY),1,1,CellType.FLOOR));
     private static Player player;
+
+    static String[] maps = new String[]{"/map.txt", "/map1.txt", "/map2.txt"};
+
+
     public MapLoader() {
     }
 
     public static GameMap loadMap(String playerName) {
-        String[] maps = {"/map.txt", "/map1.txt", "/map2.txt"};
-        if (flag==3) {
-            flag = 0;
+        if (flag>3){
+            flag=0;
         }
         InputStream is = MapLoader.class.getResourceAsStream(maps[flag]);
-
+        ArrayList<Object> allObjects = JSONDatabaseManager.getSave();
+        if (flag==0) {
+            if (Objects.equals(JSONextract.getCurrentPlayer().getName(), playerName)) {
+                maps = new String[]{"/emptymap.txt", "/emptymap1.txt", "/emptymap2.txt"};
+                is = MapLoader.class.getResourceAsStream(maps[JSONextract.getCurrentFlagMap() - 1]);
+            }
+        } else {
+            maps = new String[]{"/map.txt", "/map1.txt", "/map2.txt"};
+            is = MapLoader.class.getResourceAsStream(maps[flag]);
+        }
         flag++;
-
         Scanner scanner = new Scanner(is);
         int width = scanner.nextInt();// /2
         int height = scanner.nextInt();// /2
         scanner.nextLine();
         GameMap map = new GameMap(width, height, CellType.EMPTY);
+
 
         for (int y = 0; y < height; ++y) {
             String line = scanner.nextLine();
@@ -62,7 +82,7 @@ public class MapLoader {
                         case '/':
                         case '0':
                             cell.setType(CellType.FLOOR);
-                            new Crown(cell, 100);
+                            map.setItemInitial(new Crown(cell));
                             break;
                         case '1':
                             cell.setType(CellType.CASTLE1);
@@ -154,9 +174,16 @@ public class MapLoader {
                             break;
                         case '@':
                             cell.setType(CellType.FLOOR);
-                            if (flag == 1) {
+                            if (maps[flag-1].equals("/map.txt")){
                                 player = new Player(cell, playerName);
                             } else {
+                                if (player == null){
+                                    flag++;
+//                                    JSONDatabaseManager.saveGame();
+                                    player = JSONextract.getCurrentPlayer();
+                                    player.setTileName();
+
+                                }
                                 cell.setCellContent(player);
                                 player.setCell(cell);
                             }
@@ -170,7 +197,7 @@ public class MapLoader {
                             break;
                         case 'C':
                             cell.setType(CellType.FLOOR);
-                            map.setItemInitial(new Cheese(cell, 5));
+                            map.setItemInitial(new Cheese(cell));
                             break;
                         case 'D':
                             cell.setType(CellType.DOORCLOSE);
@@ -187,11 +214,11 @@ public class MapLoader {
                             break;
                         case 'S':
                             cell.setType(CellType.FLOOR);
-                            map.setItemInitial(new Sword(cell, 10));
+                            map.setItemInitial(new Sword(cell));
                             break;
                         case 'b':
                             cell.setType(CellType.FLOOR);
-                            map.setItemInitial(new Sword1(cell, 8));
+                            map.setItemInitial(new Sword1(cell));
                             break;
                         case 'd':
                             cell.setType(CellType.DOOROPEN);
@@ -201,11 +228,11 @@ public class MapLoader {
                             break;
                         case 'k':
                             cell.setType(CellType.FLOOR);
-                            map.setItemInitial(new Key(cell, 0));
+                            map.setItemInitial(new Key(cell));
                             break;
                         case 'q':
                             cell.setType(CellType.FLOOR);
-                            map.setItemInitial(new Helmet(cell, 5));
+                            map.setItemInitial(new Helmet(cell));
                             break;
                         case 'r':
                             cell.setType(CellType.RIVERBODY);
@@ -228,8 +255,12 @@ public class MapLoader {
             }
         }
 
+        if (Arrays.asList(maps).contains("/emptymap.txt")){
+            loadJSONSaveOnMap(map, allObjects);
+        }
         return map;
     }
+
 
     public static GameMap loadFromDatabase(ModelLoader modelLoader) {
         GameStateModel gameStateModel = modelLoader.getGameStateModel();
@@ -254,7 +285,7 @@ public class MapLoader {
                             break;
                         case '0':
                             cell.setType(CellType.FLOOR);
-                            new Crown(cell, 100);
+                            new Crown(cell);
                             break;
                         case '1':
                             cell.setType(CellType.CASTLE1);
@@ -385,32 +416,32 @@ public class MapLoader {
                 cellForItem.setType(CellType.FLOOR);
                 switch (itemModel.getItemName()) {
                     case "cheese":
-                        Cheese cheese = new Cheese(cellForItem, 5);
+                        Cheese cheese = new Cheese(cellForItem);
                         map.setItemInitial(cheese);
                         cellForItem.setCellContent(cheese);
                         break;
                     case "crown":
-                        Crown crown = new Crown(cellForItem, 5);
+                        Crown crown = new Crown(cellForItem);
                         map.setItemInitial(crown);
                         cellForItem.setCellContent(crown);
                         break;
                     case "helmet":
-                        Helmet helmet = new Helmet(cellForItem, 5);
+                        Helmet helmet = new Helmet(cellForItem);
                         map.setItemInitial(helmet);
                         cellForItem.setCellContent(helmet);
                         break;
                     case "key":
-                        Key key = new Key(cellForItem, 0);
+                        Key key = new Key(cellForItem);
                         map.setItemInitial(key);
                         cellForItem.setCellContent(key);
                         break;
                     case "sword":
-                        Sword sword = new Sword(cellForItem, 10);
+                        Sword sword = new Sword(cellForItem);
                         map.setItemInitial(sword);
                         cellForItem.setCellContent(sword);
                         break;
                     case "sword1":
-                        Sword1 sword1 = new Sword1(cellForItem, 8);
+                        Sword1 sword1 = new Sword1(cellForItem);
                         map.setItemInitial(sword1);
                         cellForItem.setCellContent(sword1);
                         break;
@@ -421,7 +452,52 @@ public class MapLoader {
         return map;
                 }
 
+
+
+
+
+
+
+    private static void loadJSONSaveOnMap(GameMap map, ArrayList<Object> allObjects){
+        for (Object object : allObjects){
+            if (object instanceof Actor){
+                Cell cellForActor = map.getCell(((Actor) object).getCell().getX(), ((Actor) object).getCell().getY());
+                cellForActor.setType(CellType.FLOOR);
+                cellForActor.setCellContent((Actor) object);
+                ((Actor) object).setCell(cellForActor);
+
+                if (object instanceof Player){
+                    ((Player) object).setTileName();
+                    GameMap.setPlayer((Player) object);
+                }
+
+                if (object instanceof Ghost){
+                    map.setGhostInitial((Ghost) object);
+                } else if (object instanceof Monster){
+                    map.setMonsterInitial((Monster) object);
+                } else if (object instanceof Goblin){
+                    map.setGoblinInitial(new Goblin(cellForActor));
+                }
             }
 
+            if (object instanceof Item){
+                Cell cellForActor = map.getCell(((Item) object).getCell().getX(), ((Item) object).getCell().getY());
+                cellForActor.setType(CellType.FLOOR);
+                cellForActor.setCellContent((Item) object);
+                ((Item) object).setCell(cellForActor);
+            }
 
+            if (object instanceof Door){
+                Cell doorCell = map.getCell(((Door) object).getCell().getX(), ((Door) object).getCell().getY());
+                if (((Door) object).isOpen()){
+                    doorCell.setType(CellType.DOOROPEN);
+                } else {
+                    doorCell.setType(CellType.DOORCLOSE);
+                }
+                doorCell.setCellContent((Door) object);
+                ((Door) object).setCell(doorCell);
+            }
+        }
+    }
+}
 

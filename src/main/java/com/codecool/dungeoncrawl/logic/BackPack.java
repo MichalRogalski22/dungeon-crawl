@@ -4,18 +4,26 @@ import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Item;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BackPack {
     private Player owner;
     private Item tempPocket;
-    private int size = 10;
+    private int size = 20;
+
+
     private ArrayList<Item> backpack = new ArrayList<>();
 
     public BackPack(Player owner) {
         this.owner = owner;
     }
 
-    public void addItemToBackPack(){
+    public void addItemToBackPackDirecly(Item item){
+        backpack.add(item);
+        updatePlayerParameters(item);
+    }
+
+    public void addItemToBackPack(List<Item> items){
         if (tempPocket != null){
             if (backpack.size() < size){
                 PlayMusic.setSoundTrack("src/main/resources/music/dropinbag.wav", 80.0f);
@@ -24,6 +32,14 @@ public class BackPack {
                 updatePlayerParameters(tempPocket);
                 owner.setTileName();
                 setTempPocket(null);
+
+                Cell playerPosition = owner.getCell();
+                for (Item item: items){
+                    if (playerPosition.equals(item.getCell())){
+                       items.remove(item);
+                       break;
+                    }
+                }
             }
         }
     }

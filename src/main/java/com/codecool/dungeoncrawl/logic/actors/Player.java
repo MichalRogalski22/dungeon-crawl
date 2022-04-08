@@ -8,12 +8,14 @@ package com.codecool.dungeoncrawl.logic.actors;
 import com.codecool.dungeoncrawl.GameOver;
 import com.codecool.dungeoncrawl.logic.*;
 import com.codecool.dungeoncrawl.logic.items.Cheese;
+import com.codecool.dungeoncrawl.logic.items.Door;
 import com.codecool.dungeoncrawl.logic.items.Item;
 import javafx.stage.Stage;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class Player extends Actor {
@@ -24,7 +26,7 @@ public class Player extends Actor {
 
     public Player(Cell cell, String name) {
         super(cell);
-        this.setHealth(5);
+        this.setHealth(10);
         this.setAttackPower(1);
         this.setShield(1);
         this.backpack = new BackPack(this);
@@ -68,7 +70,7 @@ public class Player extends Actor {
         }
     }
 
-    public void openDoor(){
+    public void openDoor(ArrayList<Door> doors){
         if (backpack.getItemFromBackpack("key") == null) {
             return;
         }
@@ -77,7 +79,13 @@ public class Player extends Actor {
 
         Item key = backpack.getItemFromBackpack("key");
         backpack.removeItem(key);
-        getDoorCellIfCloseTo().setType(CellType.DOOROPEN);
+        Cell doorPosition = getDoorCellIfCloseTo();
+        for (Door door: doors){
+            if (door.getCell().equals(doorPosition)){
+                doorPosition.setType(CellType.DOOROPEN);
+                door.openDoor();
+            }
+        }
     }
 
     private void attack(Actor enemy, Stage primaryStage){
@@ -104,7 +112,6 @@ public class Player extends Actor {
             enemy.getCell().setCellContent(null);
             enemy.getCell().getGameMap().removeNPC(enemy);
         }
-
     }
 
     private Cell getDoorCellIfCloseTo(){
@@ -215,5 +222,5 @@ public class Player extends Actor {
         return name;
     }
 
-
+    public void setName(String name) { this.name = name; }
 }
